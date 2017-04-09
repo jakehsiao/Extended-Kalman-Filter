@@ -47,12 +47,12 @@ FusionEKF::FusionEKF() {
   // init the values of ekf matrixes
   ekf_.P_ << 1, 0, 0, 0,
 	  0, 1, 0, 0,
-	  0, 0, 1000, 1000,
+	  0, 0, 1000, 0,
 	  0, 0, 0, 1000;
   ekf_.F_ << 1, 0, 1, 0,
 	  0, 1, 0, 1,
 	  0, 0, 1, 0,
-	  1, 1, 0, 1;
+	  0, 0, 0, 1;
 
   ekf_.R_l = R_laser_;
   ekf_.R_r = R_radar_;
@@ -109,11 +109,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /*****************************************************************************
    *  Prediction
    ****************************************************************************/
-  float noise_ax = 2;
-  float noise_ay = 2;
+  float noise_ax = 9;
+  float noise_ay = 9;
 
   
-  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
+  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0; //not divide so much, 1000000
   previous_timestamp_ = measurement_pack.timestamp_;
 
   float dt2 = dt*dt;

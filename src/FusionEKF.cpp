@@ -32,13 +32,11 @@ FusionEKF::FusionEKF() {
         0, 0.0009, 0,
         0, 0, 0.09;
 
-  /**
-  TODO:
-    * Finish initializing the FusionEKF.
-    * Set the process and measurement noises
-  */
+  // init the H matrix of laser
   H_laser_ << 1,0,0,0,
 	  0,1,0,0;
+
+  // init the ekf matrixes
   ekf_.P_ = MatrixXd(4, 4);
   ekf_.F_ = MatrixXd(4, 4);
   ekf_.Q_ = MatrixXd(4, 4);
@@ -46,6 +44,7 @@ FusionEKF::FusionEKF() {
   ekf_.R_l = MatrixXd(2, 2);
   ekf_.R_r = MatrixXd(3, 3);
   
+  // init the values of ekf matrixes
   ekf_.P_ << 1, 0, 0, 0,
 	  0, 1, 0, 0,
 	  0, 0, 1000, 1000,
@@ -59,7 +58,6 @@ FusionEKF::FusionEKF() {
   ekf_.R_r = R_radar_;
   ekf_.H_ = H_laser_;
 
-  // measurement noise??
 
 }
 
@@ -102,7 +100,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     }
 
 
-    previous_timestamp_ = measurement_pack.timestamp_; // not sure if this should be added
+    previous_timestamp_ = measurement_pack.timestamp_; 
     // done initializing, no need to predict or update
     is_initialized_ = true;
     return;
@@ -111,8 +109,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /*****************************************************************************
    *  Prediction
    ****************************************************************************/
-  float noise_ax = 5;
-  float noise_ay = 5;
+  float noise_ax = 2;
+  float noise_ay = 2;
 
   
   float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
@@ -131,7 +129,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	
   ekf_.Predict();
 
-  cout << "Predicted P = " << ekf_.P_ << endl;
 
   /*****************************************************************************
    *  Update
@@ -147,7 +144,5 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // Laser updates
     ekf_.Update(measurement_pack.raw_measurements_);
   }
-  cout << "Updated P = " << ekf_.P_ << endl;
-  cout << "---" << endl;
 
   }

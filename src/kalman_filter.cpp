@@ -51,5 +51,4 @@ void KalmanFilter::UpdateEKF(const VectorXd &z, MatrixXd &Hj) {
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * Hj) * P_; 
-  // any difference?
 }
